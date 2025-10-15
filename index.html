@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HM Organics - Digital Invoice Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="company-branding">
+                <div class="logo-section">
+                    <div class="logo-upload">
+                        <input type="file" id="logoUpload" accept="image/*" class="hidden">
+                        <div class="logo-preview" id="logoPreview">
+                            <div class="upload-placeholder">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12h14"/>
+                                </svg>
+                                <span>Upload Logo</span>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn--outline btn--sm" onclick="document.getElementById('logoUpload').click()">Choose Logo</button>
+                    </div>
+                </div>
+                <div class="company-details">
+                    <h1 class="company-name" id="webTitle">HM Organics - Digital Invoice Generator</h1>
+                    <h1 class="company-name hidden" id="printTitle">HM Organics</h1>
+                    <p class="company-tagline">Quality Dairy Products</p>
+                    <p class="company-address">D-003 Sai inclave Tilpta, Greater Noida (U.P)</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="invoice-form">
+            <!-- Customer Details Section -->
+            <section class="card">
+                <div class="card__header">
+                    <h2>Customer Details</h2>
+                </div>
+                <div class="card__body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="customerName">Customer Name *</label>
+                            <input type="text" id="customerName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="customerPhone">Phone Number (Optional)</label>
+                            <input type="tel" id="customerPhone" class="form-control">
+                        </div>
+                        <div class="form-group form-group--full">
+                            <label class="form-label" for="customerAddress">Address (Optional)</label>
+                            <textarea id="customerAddress" class="form-control" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="customerGSTIN">GSTIN (Optional)</label>
+                            <input type="text" id="customerGSTIN" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="invoiceDate">Invoice Date</label>
+                            <input type="date" id="invoiceDate" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Product Selection Section -->
+            <section class="card">
+                <div class="card__header">
+                    <h2>Products</h2>
+                    <button type="button" class="btn btn--primary btn--sm" id="addProductBtn">Add Product</button>
+                </div>
+                <div class="card__body">
+                    <div class="products-table">
+                        <div class="table-header">
+                            <div class="th">Product</div>
+                            <div class="th">Quantity</div>
+                            <div class="th">Unit</div>
+                            <div class="th">Rate</div>
+                            <div class="th">Amount</div>
+                            <div class="th">Action</div>
+                        </div>
+                        <div id="productRows">
+                            <!-- Product rows will be added dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GST Section -->
+            <section class="card">
+                <div class="card__header">
+                    <h2>GST Details</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="gstToggle">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">Enable GST</span>
+                    </label>
+                </div>
+                <div class="card__body" id="gstSection" style="display: none;">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="companyGSTIN">Company GSTIN</label>
+                            <input type="text" id="companyGSTIN" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="placeOfSupply">Place of Supply</label>
+                            <input type="text" id="placeOfSupply" class="form-control" value="Uttar Pradesh">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Invoice Summary -->
+            <section class="card">
+                <div class="card__header">
+                    <h2>Invoice Summary</h2>
+                    <label class="toggle-switch" id="dueToggleLabel">
+                        <input type="checkbox" id="dueToggle">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">Enable Due Tracking</span>
+                    </label>
+                </div>
+                <div class="card__body">
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-label">Subtotal:</span>
+                            <span class="summary-value" id="subtotal">₹0.00</span>
+                        </div>
+                        <div class="summary-item" id="cgstRow" style="display: none;">
+                            <span class="summary-label">CGST:</span>
+                            <span class="summary-value" id="cgstAmount">₹0.00</span>
+                        </div>
+                        <div class="summary-item" id="sgstRow" style="display: none;">
+                            <span class="summary-label">SGST:</span>
+                            <span class="summary-value" id="sgstAmount">₹0.00</span>
+                        </div>
+                        <div class="summary-item" id="igstRow" style="display: none;">
+                            <span class="summary-label">IGST:</span>
+                            <span class="summary-value" id="igstAmount">₹0.00</span>
+                        </div>
+                        <div class="summary-item summary-item--total">
+                            <span class="summary-label">Total Amount:</span>
+                            <span class="summary-value" id="totalAmount">₹0.00</span>
+                        </div>
+                        <div class="summary-item" id="dueAmountSection" style="display: none;">
+                            <span class="summary-label">Amount Paid:</span>
+                            <input type="number" class="form-control" id="amountPaidInput" min="0" step="0.01" value="0" style="width:100px;">
+                        </div>
+                        <div class="summary-item" id="dueAmountRow" style="display: none;">
+                            <span class="summary-label">Due Amount:</span>
+                            <span class="summary-value" id="dueAmountValue" style="color:var(--color-error);"></span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Digital Actions -->
+            <section class="actions">
+                <button type="button" class="btn btn--outline" id="previewBtn">Preview Invoice</button>
+                <button type="button" class="btn btn--secondary" id="downloadBtn">Download PDF</button>
+                <button type="button" class="btn btn--primary" id="whatsappBtn">Share via WhatsApp</button>
+                <button type="button" class="btn btn--outline" id="emailBtn">Email Invoice</button>
+            </section>
+        </main>
+
+        <!-- Invoice Preview Modal -->
+        <div class="modal" id="previewModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Invoice Preview</h3>
+                    <button type="button" class="modal-close" id="closePreview">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="invoice-preview" id="invoicePreview">
+                        <!-- Invoice preview will be generated here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--outline" id="closePreview2">Close</button>
+                    <button type="button" class="btn btn--secondary" id="downloadFromPreview">Download PDF</button>
+                    <button type="button" class="btn btn--primary" id="shareFromPreview">Share WhatsApp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
